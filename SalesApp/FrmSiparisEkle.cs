@@ -23,62 +23,87 @@ namespace SalesApp
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (comboBoxMusteri.SelectedItem != null && comboBoxUrun.SelectedItem != null &&
-        !   string.IsNullOrEmpty(SiparisMiktar.Text) && !string.IsNullOrEmpty(SiparisFiyat.Text))
+            SqlTransaction transaction = null;
+
+            try
             {
-              
-                int musteriId = Convert.ToInt32(((dynamic)comboBoxMusteri.SelectedItem).Value);
-                int urunId = Convert.ToInt32(((dynamic)comboBoxUrun.SelectedItem).Value);
-                int miktar = Convert.ToInt32(SiparisMiktar.Text);
-                decimal fiyat = Convert.ToDecimal(SiparisFiyat.Text);
-                var aciklama = Convert.ToString(SiparisAciklama.Text);
-
-
-                decimal toplamFiyat = fiyat * miktar;
-
-
-                baglanti.Open();
-
-                // 1. Ürünün stok miktarını kontrol et
-                SqlCommand stokSorgu = new SqlCommand("SELECT Miktar FROM Urunler WHERE Urunid = @Urunid", baglanti);
-                stokSorgu.Parameters.AddWithValue("@Urunid", urunId);
-                int mevcutStok = Convert.ToInt32(stokSorgu.ExecuteScalar());
-
-                // 2. Stok yeterliyse siparişi ekle ve stoktan düş
-                if (mevcutStok >= miktar)
+                if (comboBoxMusteri.SelectedItem != null && comboBoxUrun.SelectedItem != null &&
+                    !string.IsNullOrEmpty(SiparisMiktar.Text) && !string.IsNullOrEmpty(SiparisFiyat.Text))
                 {
+                    int musteriId = Convert.ToInt32(((dynamic)comboBoxMusteri.SelectedItem).Value);
+                    int urunId = Convert.ToInt32(((dynamic)comboBoxUrun.SelectedItem).Value);
+                    int miktar = Convert.ToInt32(SiparisMiktar.Text);
+                    decimal fiyat = Convert.ToDecimal(SiparisFiyat.Text);
+                    string aciklama = SiparisAciklama.Text;
+                    decimal toplamFiyat = fiyat * miktar;
 
-                    string query = "INSERT INTO Siparisler (Musteriid, Urunid, Adet, Fiyat, ToplamFiyat, SiparisTarihi, SiparisAciklama) " +
-                   "VALUES (@Musteriid, @Urunid, @Adet, @Fiyat, @ToplamFiyat, @SiparisTarihi, @SiparisAciklama)";
+                    baglanti.Open();
+                    transaction = baglanti.BeginTransaction(); // Transaction başlat
 
-                    SqlCommand komut = new SqlCommand(query, baglanti);
-                    komut.Parameters.AddWithValue("@Musteriid", musteriId);
-                    komut.Parameters.AddWithValue("@Urunid", urunId);
-                    komut.Parameters.AddWithValue("@Adet", miktar);
-                    komut.Parameters.AddWithValue("@Fiyat", fiyat);
-                    komut.Parameters.AddWithValue("@ToplamFiyat", toplamFiyat);
-                    komut.Parameters.AddWithValue("@SiparisTarihi", DateTime.Now);
-                    komut.Parameters.AddWithValue("@SiparisAciklama", aciklama);
+                    try
+                    {
+                        // **1. Stok Kontrolü**
+                        SqlCommand stokSorgu = new SqlCommand("SELECT Miktar FROM Urunler WHERE Urunid = @Urunid", baglanti, transaction);
+                        stokSorgu.Parameters.AddWithValue("@Urunid", urunId);
+                        int mevcutStok = Convert.ToInt32(stokSorgu.ExecuteScalar());
 
+                        if (mevcutStok >= miktar)
+                        {
+                            // **2. Siparişi Ekle**
+                            string query = @"INSERT INTO Siparisler (Musteriid, Urunid, Adet, Fiyat, ToplamFiyat, SiparisTarihi, SiparisAciklama) 
+                                    VALUES (@Musteriid, @Urunid, @Adet, @Fiyat, @ToplamFiyat, @SiparisTarihi, @SiparisAciklama)";
+                            SqlCommand komut = new SqlCommand(query, baglanti, transaction);
+                            komut.Parameters.AddWithValue("@Musteriid", musteriId);
+                            komut.Parameters.AddWithValue("@Urunid", urunId);
+                            komut.Parameters.AddWithValue("@Adet", miktar);
+                            komut.Parameters.AddWithValue("@Fiyat", fiyat);
+                            komut.Parameters.AddWithValue("@ToplamFiyat", toplamFiyat);
+                            komut.Parameters.AddWithValue("@SiparisTarihi", DateTime.Now);
+                            komut.Parameters.AddWithValue("@SiparisAciklama", aciklama);
 
-                    
+                            int eklenenSatir = komut.ExecuteNonQuery();
 
-                    // Stoktan düş
-                    SqlCommand stokGuncelle = new SqlCommand("UPDATE Urunler SET Miktar = Miktar - @Miktar WHERE Urunid = @Urunid", baglanti);
-                    stokGuncelle.Parameters.AddWithValue("@Urunid", urunId);
-                    stokGuncelle.Parameters.AddWithValue("@Miktar", miktar);
-                    stokGuncelle.ExecuteNonQuery();
+                            if (eklenenSatir > 0)
+                            {
+                                // **3. Stok Güncelle**
+                                SqlCommand stokGuncelle = new SqlCommand("UPDATE Urunler SET Miktar = Miktar - @Miktar WHERE Urunid = @Urunid", baglanti, transaction);
+                                stokGuncelle.Parameters.AddWithValue("@Urunid", urunId);
+                                stokGuncelle.Parameters.AddWithValue("@Miktar", miktar);
+                                stokGuncelle.ExecuteNonQuery();
 
-                    MessageBox.Show("Sipariş eklendi ve stok güncellendi.");
+                                transaction.Commit(); // **Tüm işlemler başarılı, kaydet**
+                                transaction = null; // İşlem tamamlandı, tekrar kullanılmasın
+
+                                MessageBox.Show("Sipariş eklendi ve stok güncellendi.");
+                                BtnVeriGoster_Click(null, null); // Listeyi güncelle
+                            }
+                            else
+                            {
+                                throw new Exception("Sipariş eklenemedi! Veritabanında bir hata oluştu.");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Yetersiz stok! Sipariş verilemedi.");
+                        }
+                    }
+                   
+                    finally
+                    {
+                        if (baglanti.State == ConnectionState.Open)
+                            baglanti.Close();
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Yetersiz stok! Sipariş verilemedi.");
+                    MessageBox.Show("Lütfen tüm alanları doldurun.");
                 }
-
-                baglanti.Close();
             }
-        
+            catch (Exception ex)
+            {
+                MessageBox.Show("Beklenmeyen bir hata oluştu: " + ex.Message);
+            }
+
         }
 
         private void FrmSiparisEkle_Load(object sender, EventArgs e)
@@ -158,7 +183,32 @@ namespace SalesApp
 
         private void BtnVeriGoster_Click(object sender, EventArgs e)
         {
-            
+            listView1.Items.Clear();
+            SqlCommand komut = new SqlCommand("SELECT Siparisid, MusteriEkle.Adi + ' ' + MusteriEkle.Soyadi AS MusteriAdi, " +
+                                              "Urunler.UrunAdi, Siparisler.Adet, Siparisler.Fiyat, Siparisler.ToplamFiyat, " +
+                                              "Siparisler.SiparisTarihi, Siparisler.SiparisAciklama " +
+                                              "FROM Siparisler " +
+                                              "INNER JOIN MusteriEkle ON Siparisler.Musteriid = MusteriEkle.Musteriid " +
+                                              "INNER JOIN Urunler ON Siparisler.Urunid = Urunler.Urunid", baglanti);
+
+            baglanti.Open();
+            SqlDataReader oku = komut.ExecuteReader();
+
+            while (oku.Read())
+            {
+                ListViewItem item = new ListViewItem(oku["Siparisid"].ToString());
+                item.SubItems.Add(oku["MusteriAdi"].ToString());
+                item.SubItems.Add(oku["UrunAdi"].ToString());
+                item.SubItems.Add(oku["Adet"].ToString());
+                item.SubItems.Add(oku["Fiyat"].ToString());
+                item.SubItems.Add(oku["ToplamFiyat"].ToString());
+                item.SubItems.Add(Convert.ToDateTime(oku["SiparisTarihi"]).ToString("yyyy-MM-dd"));
+                item.SubItems.Add(oku["SiparisAciklama"].ToString());
+
+                listView1.Items.Add(item);
+            }
+
+            baglanti.Close();
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
