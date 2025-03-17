@@ -30,7 +30,6 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.Mst2 = new System.Windows.Forms.Button();
@@ -61,7 +60,6 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Crimson;
             this.panel1.Controls.Add(this.button6);
-            this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.Mst2);
@@ -80,15 +78,7 @@
             this.button6.TabIndex = 35;
             this.button6.Text = "Çıkış";
             this.button6.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(0, 320);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(218, 70);
-            this.button5.TabIndex = 34;
-            this.button5.Text = "button5";
-            this.button5.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button4
             // 
@@ -96,8 +86,9 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(218, 70);
             this.button4.TabIndex = 19;
-            this.button4.Text = "button4";
+            this.button4.Text = "Siparişler";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button3
             // 
@@ -150,7 +141,7 @@
             this.groupBox1.Controls.Add(this.MstAdi);
             this.groupBox1.Location = new System.Drawing.Point(227, 33);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(988, 531);
+            this.groupBox1.Size = new System.Drawing.Size(958, 531);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Müşteri Kayıt";
@@ -303,7 +294,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1227, 576);
+            this.ClientSize = new System.Drawing.Size(1193, 576);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
@@ -312,6 +303,7 @@
             this.Name = "FrmMusteriEkle";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form2";
+            this.Load += new System.EventHandler(this.FrmMusteriEkle_Load);
             this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -340,7 +332,6 @@
         private System.Windows.Forms.TextBox MstVergiNo;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox MstMail;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button Mst2;

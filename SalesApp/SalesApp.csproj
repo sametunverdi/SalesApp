@@ -52,11 +52,23 @@
     <Compile Include="FrmGiris.Designer.cs">
       <DependentUpon>FrmGiris.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmKayitOl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmKayitOl.Designer.cs">
+      <DependentUpon>FrmKayitOl.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmMusteriEkle.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrmMusteriEkle.Designer.cs">
       <DependentUpon>FrmMusteriEkle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmSiparisEkle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSiparisEkle.Designer.cs">
+      <DependentUpon>FrmSiparisEkle.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmUrunler.cs">
       <SubType>Form</SubType>
@@ -75,8 +87,14 @@
     <EmbeddedResource Include="FrmGiris.resx">
       <DependentUpon>FrmGiris.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmKayitOl.resx">
+      <DependentUpon>FrmKayitOl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmMusteriEkle.resx">
       <DependentUpon>FrmMusteriEkle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmSiparisEkle.resx">
+      <DependentUpon>FrmSiparisEkle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmUrunler.resx">
       <DependentUpon>FrmUrunler.cs</DependentUpon>

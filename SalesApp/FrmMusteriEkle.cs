@@ -70,5 +70,22 @@ namespace SalesApp
             frm.Show();
             this.Hide();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            FrmSiparisEkle frm = new FrmSiparisEkle();
+            frm.Show();
+            this.Hide();
+        }
+
+        private void FrmMusteriEkle_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }

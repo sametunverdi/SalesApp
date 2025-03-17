@@ -40,7 +40,6 @@
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel1 = new System.Windows.Forms.Panel();
             this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.Mst2 = new System.Windows.Forms.Button();
@@ -117,7 +116,7 @@
             // columnHeader5
             // 
             this.columnHeader5.Text = "MAİL";
-            this.columnHeader5.Width = 149;
+            this.columnHeader5.Width = 118;
             // 
             // columnHeader6
             // 
@@ -143,7 +142,6 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.Crimson;
             this.panel1.Controls.Add(this.button6);
-            this.panel1.Controls.Add(this.button5);
             this.panel1.Controls.Add(this.button4);
             this.panel1.Controls.Add(this.button3);
             this.panel1.Controls.Add(this.Mst2);
@@ -162,15 +160,7 @@
             this.button6.TabIndex = 35;
             this.button6.Text = "Çıkış";
             this.button6.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(0, 320);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(218, 70);
-            this.button5.TabIndex = 34;
-            this.button5.Text = "button5";
-            this.button5.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button4
             // 
@@ -178,8 +168,9 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(218, 70);
             this.button4.TabIndex = 19;
-            this.button4.Text = "button4";
+            this.button4.Text = "Siparişler";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button3
             // 
@@ -199,6 +190,7 @@
             this.Mst2.TabIndex = 17;
             this.Mst2.Text = "Ürünler";
             this.Mst2.UseVisualStyleBackColor = true;
+            this.Mst2.Click += new System.EventHandler(this.Mst2_Click);
             // 
             // Mst1
             // 
@@ -432,6 +424,7 @@
             this.Name = "Musteriler";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Musteriler";
+            this.Load += new System.EventHandler(this.Musteriler_Load);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -452,7 +445,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button Mst2;

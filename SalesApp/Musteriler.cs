@@ -24,6 +24,8 @@ namespace SalesApp
         private void verilergoster()
         {
 
+            
+
             baglanti.Open();
             SqlCommand komut = new SqlCommand("select * from MusteriEkle", baglanti);
             SqlDataReader oku = komut.ExecuteReader();
@@ -44,8 +46,14 @@ namespace SalesApp
                 ekle.SubItems.Add(oku["Vergino"].ToString());
 
                 listView1.Items.Add(ekle);
+
+              
+                
+
             }
             baglanti.Close();
+
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -66,6 +74,9 @@ namespace SalesApp
             MstTelefon.Text = listView1.SelectedItems[0].SubItems[6].Text;
             MstTc.Text = listView1.SelectedItems[0].SubItems[7].Text;
             MstVergiNo.Text = listView1.SelectedItems[0].SubItems[8].Text;
+
+            listView1.Items.Clear(); 
+            verilergoster(); 
 
         }
 
@@ -155,12 +166,40 @@ namespace SalesApp
 
         private void Mst1_Click(object sender, EventArgs e)
         {
-
+            FrmMusteriEkle frm = new FrmMusteriEkle();
+            frm.Show();
+            this.Hide();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
+            FrmMusteriEkle frm= new FrmMusteriEkle();
+            frm.Show();
+            this.Hide();
+        }
 
+        private void Mst2_Click(object sender, EventArgs e)
+        {
+            FrmUrunler frm = new FrmUrunler();
+            frm.Show();
+            this.Hide();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            FrmSiparisEkle frm = new FrmSiparisEkle();
+            frm.Show();
+            this.Hide();
+        }
+
+        private void Musteriler_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

@@ -33,6 +33,8 @@ namespace SalesApp
         private void verilergoster()
         {
 
+            listView1.Items.Clear();
+
             baglanti.Open();
             SqlCommand komut = new SqlCommand("select * from Urunler", baglanti);
             SqlDataReader oku = komut.ExecuteReader();
@@ -100,6 +102,91 @@ namespace SalesApp
         private void VeriGoster_Click(object sender, EventArgs e)
         {
             verilergoster();
+        }
+
+        private void BtnGuncelle_Click(object sender, EventArgs e)
+        {
+            if (id != 0)
+            {
+                baglanti.Open();
+
+                SqlCommand komut = new SqlCommand("UPDATE Urunler SET UrunAdi = @UrunAdi, Barkod = @Barkod, Birim = @Birim, Miktar = @Miktar, Fiyat = @Fiyat WHERE Urunid = @Urunid", baglanti);
+
+                komut.Parameters.AddWithValue("@UrunAdi", UrnAdi.Text);
+                komut.Parameters.AddWithValue("@Barkod", UrnBarkod.Text);
+                komut.Parameters.AddWithValue("@Birim", UrnBirim.Text);
+                komut.Parameters.AddWithValue("@Miktar", Convert.ToInt32(UrnAdet.Text));
+                komut.Parameters.AddWithValue("@Fiyat", Convert.ToDecimal(UrnFiyat.Text));
+                komut.Parameters.AddWithValue("@Urunid", id);
+
+                komut.ExecuteNonQuery();
+                baglanti.Close();
+
+                verilergoster();
+            }
+        }
+
+        private void BtnSil_Click(object sender, EventArgs e)
+        {
+            if (id != 0)
+            {
+                baglanti.Open();
+
+                SqlCommand komut = new SqlCommand("DELETE FROM Urunler WHERE Urunid = @Urunid", baglanti);
+
+                komut.Parameters.AddWithValue("@Urunid", id);
+
+                komut.ExecuteNonQuery();
+                baglanti.Close();
+
+                verilergoster();
+            }
+        }
+
+        private void BtnTemizle_Click(object sender, EventArgs e)
+        {
+            UrnAdi.Clear();
+            UrnBarkod.Clear();
+            UrnBirim.Clear();
+            UrnAdet.Clear();
+            UrnFiyat.Clear();
+            
+        }
+
+        private void BtnAra_Click(object sender, EventArgs e)
+        {
+            baglanti.Open();
+            SqlCommand komut = new SqlCommand("select * from Urunler where UrunAdi like '%" + UrnAra.Text + "%'", baglanti);
+            SqlDataReader oku = komut.ExecuteReader();
+
+            while (oku.Read())
+            {
+
+
+                ListViewItem ekle = new ListViewItem();
+                ekle.Text = oku["Urunid"].ToString();
+                ekle.SubItems.Add(oku["UrunAdi"].ToString());
+                ekle.SubItems.Add(oku["Barkod"].ToString());
+                ekle.SubItems.Add(oku["Birim"].ToString());
+                ekle.SubItems.Add(oku["Miktar"].ToString());
+                ekle.SubItems.Add(oku["Fiyat"].ToString());
+               
+
+                listView1.Items.Add(ekle);
+            }
+            baglanti.Close();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            FrmSiparisEkle frm = new FrmSiparisEkle();
+            frm.Show();
+            this.Hide();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
