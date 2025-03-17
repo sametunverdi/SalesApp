@@ -37,7 +37,9 @@ namespace SalesApp
                     string aciklama = SiparisAciklama.Text;
                     decimal toplamFiyat = fiyat * miktar;
 
-                    baglanti.Open();
+                    if (baglanti.State == ConnectionState.Closed) // Bağlantı kapalıysa aç
+                        baglanti.Open();
+
                     transaction = baglanti.BeginTransaction(); // Transaction başlat
 
                     try
@@ -72,8 +74,6 @@ namespace SalesApp
                                 stokGuncelle.ExecuteNonQuery();
 
                                 transaction.Commit(); // **Tüm işlemler başarılı, kaydet**
-                                transaction = null; // İşlem tamamlandı, tekrar kullanılmasın
-
                                 MessageBox.Show("Sipariş eklendi ve stok güncellendi.");
                                 BtnVeriGoster_Click(null, null); // Listeyi güncelle
                             }
@@ -87,10 +87,14 @@ namespace SalesApp
                             throw new Exception("Yetersiz stok! Sipariş verilemedi.");
                         }
                     }
-                   
+                    catch (Exception ex)
+                    {
+                        transaction?.Rollback(); // İşlem başarısızsa geri al
+                        MessageBox.Show("İşlem sırasında hata oluştu: " + ex.Message);
+                    }
                     finally
                     {
-                        if (baglanti.State == ConnectionState.Open)
+                        if (baglanti.State == ConnectionState.Open) // Bağlantı açıksa kapat
                             baglanti.Close();
                     }
                 }
@@ -101,7 +105,7 @@ namespace SalesApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Beklenmeyen bir hata oluştu: " + ex.Message);
+
             }
 
         }
